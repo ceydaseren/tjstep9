@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Step 9 — Decide and Move Into Action | Timeline Jumpers</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@300;400;600&display=swap');
+
+  :root {
+    --cyan: #1cd6e7;
+    --magenta: #f62bd1;
+    --purple: #8051c8;
+    --amber: #f4a749;
+    --phase: #f62bd1;
+    --phase-glow: rgba(246,43,209,0.35);
+    --phase-soft: rgba(246,43,209,0.08);
+    --bg: #0a0a1f;
+    --mid: #15122e;
+    --card: rgba(30,26,62,0.6);
+    --border: rgba(255,255,255,0.08);
+    --glow-border: rgba(246,43,209,0.35);
+    --text: #f8f5ff;
+    --text-sec: rgba(248,245,255,0.72);
+    --gradient: linear-gradient(135deg, #1cd6e7, #8051c8, #f62bd1);
+    --gradient-phase: linear-gradient(135deg, #f62bd1, #8051c8);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* ── STARS ── */
+  .stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .star {
+    position: absolute; border-radius: 50%; background: #fff;
+    animation: twinkle var(--dur,3s) ease-in-out infinite var(--delay,0s); opacity: 0;
+  }
+  @keyframes twinkle {
+    0%,100% { opacity:0; transform:scale(0.8); }
+    50% { opacity:var(--op,0.6); transform:scale(1); }
+  }
+
+  /* ── COSMIC BG ── */
+  .cosmic-bg { position:fixed; inset:0; pointer-events:none; z-index:0; }
+  .cosmic-bg::before {
+    content:''; position:absolute; top:-20%; left:-10%; width:60%; height:60%;
+    background:radial-gradient(ellipse,rgba(246,43,209,0.07) 0%,transparent 70%);
+  }
+  .cosmic-bg::after {
+    content:''; position:absolute; bottom:-10%; right:-10%; width:55%; height:55%;
+    background:radial-gradient(ellipse,rgba(246,43,209,0.06) 0%,transparent 70%);
+  }
+  .cosmic-mid {
+    position:fixed; top:40%; left:30%; width:50%; height:50%;
+    background:radial-gradient(ellipse,rgba(128,81,200,0.07) 0%,transparent 70%);
+    pointer-events:none; z-index:0;
+  }
+
+  /* ── CURSOR ── */
+  .cursor-dot {
+    position:fixed; border-radius:50%; pointer-events:none; z-index:9999;
+    transform:translate(-50%,-50%); animation:dotFade 0.6s ease forwards;
+  }
+  @keyframes dotFade {
+    0% { opacity:0.9; transform:translate(-50%,-50%) scale(1); }
+    100% { opacity:0; transform:translate(-50%,-50%) scale(0.2); }
+  }
+  .cursor-sparkle {
+    position:fixed; pointer-events:none; z-index:9999; font-size:12px;
+    transform:translate(-50%,-50%); animation:sparkleFade 0.8s ease forwards;
+  }
+  @keyframes sparkleFade {
+    0% { opacity:1; transform:translate(-50%,-50%) scale(1); }
+    100% { opacity:0; transform:translate(-50%,-120%) scale(0.5); }
+  }
+  @keyframes tapRipple { from{transform:scale(0);opacity:1;} to{transform:scale(2.5);opacity:0;} }
+
+  /* ── LAYOUT ── */
+  .page-wrap { position:relative; z-index:1; }
+
+  /* ── INTENTION BLOCK ── */
+  .intention-block {
+    width:100%; padding:32px 40px; text-align:center;
+    position:relative; background:var(--mid);
+    border-bottom:1px solid var(--border); overflow:hidden;
+  }
+  .intention-block::after {
+    content:''; position:absolute; top:0; left:0; right:0;
+    height:2px; background:var(--gradient);
+  }
+  .phase-eyebrow {
+    font-family:'Inter',sans-serif; font-weight:600; font-size:10px;
+    letter-spacing:0.22em; text-transform:uppercase; color:var(--phase);
+    margin-bottom:14px; text-shadow:0 0 12px rgba(246,43,209,0.7),0 0 24px rgba(246,43,209,0.3);
+  }
+  .intention-statement {
+    font-family:'Fraunces',serif; font-weight:700;
+    font-size:clamp(16px,3vw,20px); color:var(--text);
+    line-height:1.4; max-width:620px; margin:0 auto;
+  }
+  .intention-subtext {
+    font-family:'Inter',sans-serif; font-weight:600; font-size:9px;
+    letter-spacing:0.24em; text-transform:uppercase;
+    color:rgba(248,245,255,0.3); margin-top:14px;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-section { background:var(--mid); border-bottom:1px solid var(--border); padding:18px 40px; }
+  .progress-inner { max-width:720px; margin:0 auto; padding:0 24px; }
+  .progress-meta { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+  .progress-label { font-family:'Inter',sans-serif; font-weight:600; font-size:10px; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-sec); }
+  .progress-count { font-family:'Inter',sans-serif; font-weight:400; font-size:11px; color:var(--text-sec); }
+  .progress-track { height:2px; background:var(--border); border-radius:2px; overflow:hidden; }
+  .progress-fill { height:100%; background:var(--gradient-phase); border-radius:2px; }
+
+  /* ── MAIN CONTENT ── */
+  .main-content { max-width:720px; margin:0 auto; padding:0 24px 80px; }
+
+  /* ── STEP HEADER ── */
+  .step-header {
+    padding:52px 0 36px; border-bottom:1px solid var(--border);
+    margin-bottom:40px; opacity:0; animation:fadeUp 0.6s ease 0.1s forwards;
+  }
+  .step-eyebrow {
+    font-family:'Inter',sans-serif; font-weight:600; font-size:10px;
+    letter-spacing:0.22em; text-transform:uppercase; color:var(--text-sec);
+    margin-bottom:14px; display:flex; align-items:center; gap:10px;
+  }
+  .step-number-badge-pill {
+    display:inline-flex; align-items:center; justify-content:center;
+    background:var(--phase); color:#0a0a1f; font-family:'Inter',sans-serif;
+    font-weight:600; font-size:10px; letter-spacing:0.14em;
+    text-transform:uppercase; padding:4px 10px; border-radius:30px; flex-shrink:0;
+  }
+  .step-title {
+    font-family:'Fraunces',serif; font-weight:700;
+    font-size:clamp(28px,5vw,40px); color:var(--text);
+    line-height:1.15; margin-bottom:12px;
+  }
+  .step-title .gradient-word {
+    background:var(--gradient); -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent; background-clip:text; font-style:italic;
+  }
+  .step-subtitle { font-family:'Inter',sans-serif; font-weight:300; font-size:15px; color:var(--text-sec); line-height:1.7; }
+
+  /* ── SECTION BLOCKS ── */
+  .section-block { margin-bottom:40px; opacity:0; animation:fadeUp 0.6s ease forwards; }
+  .section-block:nth-child(2) { animation-delay:0.2s; }
+  .section-block:nth-child(3) { animation-delay:0.3s; }
+  .section-block:nth-child(4) { animation-delay:0.4s; }
+  .section-block:nth-child(5) { animation-delay:0.5s; }
+  .section-block:nth-child(6) { animation-delay:0.6s; }
+  .section-block:nth-child(7) { animation-delay:0.7s; }
+
+  /* ── CANONICAL section-label ── */
+  .section-label {
+    font-family:'Inter',sans-serif; font-weight:600; font-size:9px;
+    letter-spacing:0.24em; text-transform:uppercase; color:var(--phase);
+    margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid rgba(246,43,209,0.2);
+  }
+
+  /* ── TEACHING COPY ── */
+  .teaching-copy p { font-family:'Inter',sans-serif; font-weight:300; font-size:15px; line-height:1.85; color:var(--text-sec); margin-bottom:16px; }
+  .teaching-copy p:last-child { margin-bottom:0; }
+
+  /* ── SOMATIC BLOCK ── */
+  .somatic-block {
+    background:var(--card); backdrop-filter:blur(20px);
+    border:1px solid var(--glow-border); border-radius:16px;
+    padding:36px 40px 32px; margin-bottom:40px;
+    text-align:center; transition:box-shadow 0.3s;
+  }
+  .somatic-block:hover { box-shadow:0 0 28px rgba(246,43,209,0.1); }
+  .breathing-ring { width:72px; height:72px; margin:0 auto 20px; position:relative; display:flex; align-items:center; justify-content:center; }
+  .breathing-ring span { position:absolute; border-radius:50%; animation:breathe 4s ease-in-out infinite; }
+  .breathing-ring span:nth-child(1) { width:24px;height:24px;animation-delay:0s;  border:1.5px solid rgba(246,43,209,0.7); }
+  .breathing-ring span:nth-child(2) { width:44px;height:44px;animation-delay:0.4s;border:1.5px solid rgba(246,43,209,0.4); }
+  .breathing-ring span:nth-child(3) { width:64px;height:64px;animation-delay:0.8s;border:1.5px solid rgba(246,43,209,0.15); }
+  @keyframes breathe {
+    0%,100% { transform:scale(0.92); opacity:0.6; }
+    50% { transform:scale(1.06); opacity:1; }
+  }
+  .somatic-heading { font-family:'Inter',sans-serif; font-weight:600; font-size:10px; letter-spacing:0.22em; text-transform:uppercase; color:var(--phase); margin-bottom:14px; }
+  .somatic-block p { font-family:'Inter',sans-serif; font-weight:400; font-size:14px; line-height:1.8; color:var(--text-sec); max-width:480px; margin:0 auto; }
+
+  /* ── REFLECTION CARD ── */
+  .reflection-card {
+    background:var(--card); backdrop-filter:blur(20px);
+    border:1px solid var(--border); border-left:3px solid var(--phase);
+    border-radius:0 12px 12px 0; padding:28px 28px 24px; margin-bottom:16px;
+    box-shadow:0 0 18px rgba(246,43,209,0.08),0 0 40px rgba(246,43,209,0.04);
+    transition:box-shadow 0.3s;
+  }
+  .reflection-card:hover { box-shadow:0 0 24px rgba(246,43,209,0.18),0 0 60px rgba(246,43,209,0.08); }
+  .reflection-prompt { font-family:'Inter',sans-serif; font-weight:400; font-size:14px; line-height:1.8; color:var(--text-sec); margin-bottom:18px; }
+  .starter-phrase { font-family:'Inter',sans-serif; font-weight:600; font-size:13px; color:var(--phase); letter-spacing:0.04em; margin-bottom:10px; display:block; }
+
+  textarea {
+    width:100%; min-height:120px; background:rgba(10,10,31,0.6);
+    border:1px solid var(--border); border-top:2px solid var(--phase);
+    border-radius:8px; padding:14px 16px;
+    font-family:'Inter',sans-serif; font-weight:300; font-size:14px;
+    line-height:1.7; color:var(--text); resize:vertical;
+    transition:border-color 0.2s,box-shadow 0.2s; outline:none;
+  }
+  textarea:focus { border-top-color:var(--phase); box-shadow:0 0 0 3px rgba(246,43,209,0.12),inset 0 0 20px rgba(246,43,209,0.04); }
+  textarea::placeholder { color:rgba(248,245,255,0.25); font-weight:300; }
+
+  /* ── ACTION ROWS ── */
+  .action-rows { display:flex; flex-direction:column; gap:10px; margin-bottom:16px; }
+  .action-row { display:flex; align-items:flex-start; gap:12px; }
+  .action-num {
+    font-family:'Fraunces',serif; font-weight:600; font-size:12px;
+    color:var(--phase); width:22px; flex-shrink:0;
+    padding-top:13px; opacity:0.6;
+  }
+  .action-input {
+    flex:1; background:rgba(10,10,31,0.6);
+    border:1px solid var(--border); border-top:2px solid var(--phase);
+    border-radius:8px; padding:12px 14px; color:var(--text);
+    font-family:'Inter',sans-serif; font-weight:300; font-size:14px;
+    line-height:1.6; resize:none; min-height:48px; outline:none;
+    transition:box-shadow 0.2s;
+  }
+  .action-input:focus { box-shadow:0 0 0 3px rgba(246,43,209,0.12),inset 0 0 14px rgba(246,43,209,0.04); }
+  .action-input::placeholder { color:rgba(248,245,255,0.25); }
+  .add-row-btn {
+    background:transparent; border:1px dashed rgba(246,43,209,0.3);
+    border-radius:8px; padding:10px 18px; color:var(--phase);
+    font-family:'Inter',sans-serif; font-weight:600; font-size:12px;
+    letter-spacing:0.06em; cursor:pointer; transition:background 0.2s,border-color 0.2s;
+    display:inline-block; margin-top:4px;
+  }
+  .add-row-btn:hover { background:rgba(246,43,209,0.06); border-color:rgba(246,43,209,0.55); }
+
+  /* ── NON-NEGOTIABLES CARD ── */
+  .non-neg-rows { display:flex; flex-direction:column; gap:10px; margin-bottom:16px; }
+  .non-neg-row { display:flex; align-items:flex-start; gap:12px; }
+  .non-neg-num {
+    font-family:'Fraunces',serif; font-weight:600; font-size:12px;
+    color:var(--phase); width:22px; flex-shrink:0;
+    padding-top:13px; opacity:0.6;
+  }
+  .non-neg-input {
+    flex:1; background:rgba(10,10,31,0.6);
+    border:1px solid var(--border); border-top:2px solid var(--phase);
+    border-radius:8px; padding:12px 14px; color:var(--text);
+    font-family:'Inter',sans-serif; font-weight:300; font-size:14px;
+    line-height:1.6; resize:none; min-height:48px; outline:none;
+    transition:box-shadow 0.2s;
+  }
+  .non-neg-input:focus { box-shadow:0 0 0 3px rgba(246,43,209,0.12),inset 0 0 14px rgba(246,43,209,0.04); }
+  .non-neg-input::placeholder { color:rgba(248,245,255,0.25); }
+
+  /* ── CALLOUT ── */
+  .callout {
+    background:rgba(246,43,209,0.07); border:1px solid rgba(246,43,209,0.25);
+    border-radius:14px; padding:28px 32px;
+    box-shadow:0 0 24px rgba(246,43,209,0.06);
+  }
+  .callout-eyebrow {
+    font-family:'Inter',sans-serif; font-weight:600; font-size:9px;
+    letter-spacing:0.24em; text-transform:uppercase; color:var(--phase);
+    margin-bottom:14px; padding-bottom:12px; border-bottom:1px solid rgba(246,43,209,0.18);
+  }
+  .callout p { font-family:'Inter',sans-serif; font-weight:300; font-size:14px; line-height:1.8; color:var(--text-sec); margin-bottom:14px; }
+  .callout p:last-child { margin-bottom:0; }
+
+  /* ── COPY ROW ── */
+  .copy-row {
+    display:flex; flex-direction:column; align-items:flex-end;
+    gap:8px; margin-top:20px; padding-top:20px; border-top:1px solid var(--border);
+  }
+  .btn-copy-responses {
+    font-family:'Inter',sans-serif; font-weight:600; font-size:11px;
+    letter-spacing:0.14em; text-transform:uppercase;
+    background:var(--gradient-phase); border:none; color:#fff;
+    padding:12px 28px; border-radius:30px; cursor:pointer;
+    transition:opacity 0.2s,transform 0.2s;
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .btn-copy-responses:hover { opacity:0.85; transform:translateY(-1px); }
+  .copy-confirm {
+    font-family:'Inter',sans-serif; font-weight:600; font-size:10px;
+    letter-spacing:0.14em; text-transform:uppercase; color:var(--phase);
+    opacity:0; transition:opacity 0.3s; min-height:16px;
+  }
+  .copy-confirm.show { opacity:1; }
+
+  /* ── EXPORT ── */
+  .export-section {
+    margin-top:48px; background:var(--card); backdrop-filter:blur(20px);
+    border:1px solid var(--border); border-radius:16px; padding:32px;
+    opacity:0; animation:fadeUp 0.6s ease 0.8s forwards;
+  }
+  .save-title { font-family:'Fraunces',serif; font-weight:700; font-size:22px; color:var(--text); margin-bottom:6px; }
+  .save-description { font-family:'Inter',sans-serif; font-weight:300; font-size:13px; color:var(--text-sec); line-height:1.6; }
+
+  /* ── FOOTER STACK ── */
+  .footer-stack { margin-top:20px; display:flex; flex-direction:column; gap:12px; }
+  .btn-next-step {
+    display:block; width:100%; padding:18px 24px; background:var(--gradient-phase);
+    color:#fff; font-family:'Inter',sans-serif; font-weight:600; font-size:12px;
+    letter-spacing:0.16em; text-transform:uppercase; text-align:center;
+    text-decoration:none; border-radius:30px; transition:opacity 0.2s; border:none;
+  }
+  .btn-next-step:hover { opacity:0.85; }
+  .btn-skool {
+    display:block; width:100%; padding:18px 24px;
+    background:rgba(255,255,255,0.04); color:rgba(255,255,255,0.9);
+    border:1px solid rgba(255,255,255,0.6); font-family:'Inter',sans-serif;
+    font-weight:600; font-size:12px; letter-spacing:0.16em; text-transform:uppercase;
+    text-align:center; text-decoration:none; border-radius:30px; transition:all 0.2s;
+  }
+  .btn-skool:hover { background:rgba(255,255,255,0.09); border-color:#fff; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
+
+  .copyright { text-align:center; padding:32px 24px; font-family:'Inter',sans-serif; font-weight:300; font-size:11px; letter-spacing:0.08em; color:rgba(248,245,255,0.25); border-top:1px solid var(--border); }
+
+  @media (max-width:600px) {
+    .intention-block { padding:24px 20px; }
+    .progress-section { padding:14px 20px; }
+    .step-header { padding:36px 0 24px; }
+    .export-section { padding:24px 20px; }
+    .somatic-block { padding:28px 20px 24px; }
+    .reflection-card { padding:22px 18px; }
+    .callout { padding:22px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+<div class="cosmic-bg"></div>
+<div class="cosmic-mid"></div>
+
+<div class="page-wrap">
+
+  <!-- INTENTION BLOCK -->
+  <div class="intention-block">
+    <div class="phase-eyebrow">Activation Phase · Step 9 of 9</div>
+    <div class="intention-statement">I am choosing something different and I am willing to show it through the actions I take today.</div>
+    <div class="intention-subtext">Set this intention before you begin</div>
+  </div>
+
+  <!-- PROGRESS BAR -->
+  <div class="progress-section">
+    <div class="progress-inner">
+      <div class="progress-meta">
+        <span class="progress-label">Activation Phase</span>
+        <span class="progress-count">Step 9 of 9</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" style="width:100%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+
+    <!-- STEP HEADER -->
+    <div class="step-header">
+      <div class="step-eyebrow">
+        <span class="step-number-badge-pill">Step 9</span>
+        Activation Phase
+      </div>
+      <h1 class="step-title">Decide and Move Into <span class="gradient-word">Action</span></h1>
+      <p class="step-subtitle">You have asked for divine support. Now you show you are serious by taking the first physical steps that declare you are choosing something new.</p>
+    </div>
+
+    <!-- TEACHING COPY -->
+    <div class="section-block teaching-copy">
+      <div class="section-label">The Teaching</div>
+      <p>You have activated the energy. You have called in your higher self, your soul, your spirit team, and initiated the process with Source. Now you are going to decide what physical steps you can take to match that energetic declaration with real-world momentum.</p>
+      <p>This is twofold. First, you are making a list of actions that declare you are choosing something different. These are the things you are going to do to show that you are serious about stepping into your new reality. They can be small or large. What matters is that they signal a shift.</p>
+      <p>Second, you are identifying your daily non-negotiables: three to five things you were not doing on the old timeline that you will now do consistently. These are not grand gestures. They are the daily rhythm that anchors the new reality and builds the energetic traction that makes it real.</p>
+    </div>
+
+    <!-- CALLOUT: INTUITION NOTE -->
+    <div class="section-block callout">
+      <div class="callout-eyebrow">A Note on Intuitive Nudges</div>
+      <p>Since you have asked your divine team for assistance, you may already be receiving intuitive nudges about what to do next. Pay attention to images that come to mind unprompted, thoughts that keep returning, or something someone says to you that lands differently than it normally would. Spirit will sometimes speak through other people when it has been trying to get a message through.</p>
+      <p>You do not need to go searching for these signals. Simply stay open and notice what arrives without effort. In the Stabilization phase you will have access to an intuition development toolkit to help you get better at recognizing these nudges over time.</p>
+    </div>
+
+    <!-- SOMATIC BLOCK -->
+    <div class="section-block somatic-block">
+      <div class="breathing-ring"><span></span><span></span><span></span></div>
+      <div class="somatic-heading">Before You Write</div>
+      <p>Take a breath and feel into the energy of the new reality you have selected. From that place, ask yourself: what actions would the version of me already living this timeline take? Let those answers rise naturally before you begin writing.</p>
+    </div>
+
+    <!-- PART ONE: ACTION STEPS -->
+    <div class="section-block">
+      <div class="section-label">Part One: Your Action Steps</div>
+      <div class="teaching-copy" style="margin-bottom:24px;">
+        <p>What actions declare that you are choosing something different? Make your list. Then identify which one you can do first, and decide when you are going to do it. Ideally, it is today. Think of this as a to-do list that aligns with the new reality you are giving your attention to.</p>
+      </div>
+
+      <div class="reflection-card">
+        <p class="reflection-prompt">List the actions you can take, big or small, that declare you are choosing a new reality. Then circle or mark the first one you will do.</p>
+        <span class="starter-phrase">The actions I am taking to declare I am choosing something new...</span>
+        <div class="action-rows" id="actionRows">
+          <div class="action-row"><span class="action-num">01</span><textarea class="action-input" rows="1" placeholder="e.g. book the consultation, start the application, research the course..." oninput="autoResize(this)"></textarea></div>
+          <div class="action-row"><span class="action-num">02</span><textarea class="action-input" rows="1" placeholder="" oninput="autoResize(this)"></textarea></div>
+          <div class="action-row"><span class="action-num">03</span><textarea class="action-input" rows="1" placeholder="" oninput="autoResize(this)"></textarea></div>
+          <div class="action-row"><span class="action-num">04</span><textarea class="action-input" rows="1" placeholder="" oninput="autoResize(this)"></textarea></div>
+          <div class="action-row"><span class="action-num">05</span><textarea class="action-input" rows="1" placeholder="" oninput="autoResize(this)"></textarea></div>
+        </div>
+        <button class="add-row-btn" onclick="addActionRow()">+ Add another</button>
+      </div>
+
+      <div class="reflection-card" style="margin-top:16px;">
+        <p class="reflection-prompt">Of everything on your list, what is the single next aligned step? Name it, and decide when you are doing it.</p>
+        <span class="starter-phrase">My next aligned step is... and I am doing it on...</span>
+        <textarea id="ta-next-step" placeholder="Name the action and give it a specific time or date." oninput="autosave('next-step')"></textarea>
+      </div>
+    </div>
+
+    <!-- PART TWO: DAILY NON-NEGOTIABLES -->
+    <div class="section-block">
+      <div class="section-label">Part Two: Daily Non-Negotiables</div>
+      <div class="teaching-copy" style="margin-bottom:24px;">
+        <p>What are three to five things you can do daily, or every other day, that you were not doing on your old timeline? These are the activities that create momentum, build belief, and anchor the energy of the new reality into your body and routine. They do not need to be elaborate. What matters is that they are new, consistent, and aligned.</p>
+        <p>Examples: starting a daily meditation practice, downloading a budgeting app and using it every day, going for a walk at lunch, cutting out something that no longer serves you and replacing it with something that does, doing daily research into something you are building toward.</p>
+      </div>
+
+      <div class="reflection-card">
+        <p class="reflection-prompt">List three to five daily non-negotiables that belong to your new timeline, things you were not doing before, that you are committing to now.</p>
+        <span class="starter-phrase">My daily non-negotiables are...</span>
+        <div class="non-neg-rows" id="nonNegRows">
+          <div class="non-neg-row"><span class="non-neg-num">01</span><textarea class="non-neg-input" rows="1" placeholder="e.g. meditate for 10 minutes every morning..." oninput="autoResize(this)"></textarea></div>
+          <div class="non-neg-row"><span class="non-neg-num">02</span><textarea class="non-neg-input" rows="1" placeholder="" oninput="autoResize(this)"></textarea></div>
+          <div class="non-neg-row"><span class="non-neg-num">03</span><textarea class="non-neg-input" rows="1" placeholder="" oninput="autoResize(this)"></textarea></div>
+          <div class="non-neg-row"><span class="non-neg-num">04</span><textarea class="non-neg-input" rows="1" placeholder="" oninput="autoResize(this)"></textarea></div>
+          <div class="non-neg-row"><span class="non-neg-num">05</span><textarea class="non-neg-input" rows="1" placeholder="" oninput="autoResize(this)"></textarea></div>
+        </div>
+
+        <div class="copy-row">
+          <button class="btn-copy-responses" onclick="copyResponses()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Copy My Responses
+          </button>
+          <span class="copy-confirm" id="copy-confirm">✓ Copied to clipboard</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SAVE YOUR WORK -->
+    <div class="export-section">
+      <h3 class="save-title">Save Your Work</h3>
+      <p class="save-description">Your responses are not saved automatically. Use the Copy My Responses button above to copy them, then paste into your notes app on your phone or computer.</p>
+    </div>
+
+    <!-- FOOTER STACK -->
+    <div class="footer-stack">
+      <a href="https://ceydaseren.github.io/tjstep10/" class="btn-next-step">Move to Stabilization Phase →</a>
+      <a href="https://www.skool.com/timeline-jumpers-9976/classroom" target="_blank" class="btn-skool">Take Me Back to Skool</a>
+    </div>
+
+  </div><!-- /main-content -->
+
+  <div class="copyright">© 2026 Ceyda Seren. All rights reserved.</div>
+
+</div><!-- /page-wrap -->
+
+<script>
+  // ── STARS ──
+  const starsEl = document.getElementById('stars');
+  for (let i = 0; i < 120; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 2 + 0.5;
+    s.style.cssText = `width:${size}px;height:${size}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--dur:${2+Math.random()*4}s;--delay:${Math.random()*4}s;--op:${0.3+Math.random()*0.6};`;
+    starsEl.appendChild(s);
+  }
+
+  // ── CURSOR TRAIL — desktop only ──
+  if (!('ontouchstart' in window)) {
+    const colors = ['#f62bd1','#8051c8','#1cd6e7','#f4a749'];
+    let moveCount = 0;
+    document.addEventListener('mousemove', e => {
+      moveCount++;
+      const dot = document.createElement('div');
+      dot.className = 'cursor-dot';
+      const size = 4 + Math.random() * 4;
+      const color = colors[Math.floor(Math.random()*colors.length)];
+      dot.style.cssText = `left:${e.clientX}px;top:${e.clientY}px;width:${size}px;height:${size}px;background:${color};box-shadow:0 0 6px ${color};`;
+      document.body.appendChild(dot);
+      setTimeout(() => dot.remove(), 600);
+      if (moveCount % 15 === 0) {
+        const spark = document.createElement('div');
+        spark.className = 'cursor-sparkle';
+        spark.textContent = '✦';
+        spark.style.cssText = `left:${e.clientX}px;top:${e.clientY}px;color:${color};`;
+        document.body.appendChild(spark);
+        setTimeout(() => spark.remove(), 800);
+      }
+    });
+  }
+
+  // ── TAP RIPPLE — mobile only ──
+  if ('ontouchstart' in window) {
+    document.addEventListener('touchstart', e => {
+      const t = e.touches[0];
+      const r = document.createElement('div');
+      r.style.cssText = `position:fixed;left:${t.clientX-30}px;top:${t.clientY-30}px;width:60px;height:60px;border-radius:50%;background:radial-gradient(circle,rgba(246,43,209,0.45) 0%,transparent 70%);pointer-events:none;z-index:9999;transform:scale(0);animation:tapRipple 0.5s ease forwards;`;
+      document.body.appendChild(r);
+      setTimeout(() => r.remove(), 500);
+    }, { passive: true });
+  }
+
+  // ── SESSION STORAGE ──
+  function autosave(key) {
+    sessionStorage.setItem('tj_step9_' + key, document.getElementById('ta-' + key)?.value || '');
+  }
+  const savedNext = sessionStorage.getItem('tj_step9_next-step');
+  if (savedNext) { const el = document.getElementById('ta-next-step'); if (el) el.value = savedNext; }
+
+  // ── AUTO RESIZE ──
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
+  }
+
+  // ── ADD ACTION ROW ──
+  let actionCount = 5;
+  function addActionRow() {
+    actionCount++;
+    const num = String(actionCount).padStart(2, '0');
+    const row = document.createElement('div');
+    row.className = 'action-row';
+    row.innerHTML = `<span class="action-num">${num}</span><textarea class="action-input" rows="1" placeholder="" oninput="autoResize(this)"></textarea>`;
+    document.getElementById('actionRows').appendChild(row);
+    row.querySelector('textarea').focus();
+  }
+
+  // ── COPY — canonical ──
+  function copyResponses() {
+    let compiled = 'TIMELINE JUMPERS — Step 9: Decide and Move Into Action\n' + '-'.repeat(50) + '\n\n';
+
+    compiled += 'ACTION STEPS\nTo step into my new timeline, I am taking action on...\n';
+    document.querySelectorAll('#actionRows .action-input').forEach((ta, i) => {
+      const v = ta.value.trim();
+      if (v) compiled += `${String(i+1).padStart(2,'0')}. ${v}\n`;
+    });
+
+    const nextStep = document.getElementById('ta-next-step')?.value.trim() || '';
+    if (nextStep) compiled += `\nNEXT ALIGNED STEP\nMy next aligned step is... and I am doing it on...\n${nextStep}\n`;
+
+    compiled += '\nDAILY NON-NEGOTIABLES\nMy daily non-negotiables are...\n';
+    document.querySelectorAll('#nonNegRows .non-neg-input').forEach((ta, i) => {
+      const v = ta.value.trim();
+      if (v) compiled += `${String(i+1).padStart(2,'0')}. ${v}\n`;
+    });
+
+    const confirm = document.getElementById('copy-confirm');
+    const show = () => { confirm.classList.add('show'); setTimeout(() => confirm.classList.remove('show'), 2500); };
+
+    navigator.clipboard.writeText(compiled).then(show).catch(() => {
+      const el = document.createElement('textarea');
+      el.value = compiled; el.style.cssText = 'position:fixed;opacity:0';
+      document.body.appendChild(el); el.select();
+      document.execCommand('copy'); document.body.removeChild(el);
+      show();
+    });
+  }
+</script>
+</body>
+</html>
