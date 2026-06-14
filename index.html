@@ -323,6 +323,112 @@
   }
   .btn-skool:hover { background:rgba(255,255,255,0.09); border-color:#fff; }
 
+  /* ── STABILIZATION GATE ── */
+  .activation-gate {
+    margin-top:48px;
+    position:relative;
+    border-radius:24px;
+    overflow:hidden;
+    opacity:0;
+    animation:fadeUp 0.6s ease 1s forwards;
+  }
+  .gate-bg {
+    position:absolute; inset:0;
+    background:linear-gradient(135deg, rgba(28,214,231,0.08) 0%, rgba(128,81,200,0.12) 50%, rgba(246,43,209,0.10) 100%);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:24px;
+  }
+  .gate-bg::before {
+    content:'';
+    position:absolute; inset:0;
+    background:radial-gradient(ellipse at 50% 0%, rgba(246,43,209,0.18) 0%, transparent 65%);
+    border-radius:24px;
+  }
+  .gate-border-top {
+    position:absolute; top:0; left:0; right:0; height:3px;
+    background:var(--gradient);
+    background-size:200% 100%;
+    animation:borderPan 4s ease-in-out infinite;
+    border-radius:24px 24px 0 0;
+  }
+  @keyframes borderPan { 0%,100%{background-position:0% 50%;} 50%{background-position:100% 50%;} }
+
+  .gate-inner {
+    position:relative;
+    padding:52px 40px 48px;
+    text-align:center;
+    z-index:1;
+  }
+
+  .gate-sparkles {
+    position:absolute; inset:0; pointer-events:none; overflow:hidden;
+    border-radius:24px;
+  }
+  .gate-spark {
+    position:absolute; font-size:13px;
+    animation:orbitSpark var(--sd,6s) ease-in-out infinite var(--del,0s);
+    opacity:0;
+  }
+  @keyframes orbitSpark {
+    0%,100% { opacity:0; transform:scale(0.5) rotate(0deg); }
+    50% { opacity:0.9; transform:scale(1.1) rotate(180deg); }
+  }
+
+  .gate-eyebrow {
+    font-family:'Inter',sans-serif; font-weight:600; font-size:9px;
+    letter-spacing:0.28em; text-transform:uppercase;
+    color:rgba(248,245,255,0.5); margin-bottom:20px;
+  }
+
+  .gate-headline {
+    font-family:'Fraunces',serif; font-weight:700;
+    font-size:clamp(26px,4.5vw,42px);
+    line-height:1.15; margin-bottom:18px;
+    background:var(--gradient);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    background-clip:text;
+    background-size:200% 200%;
+    animation:textShimmer 5s ease-in-out infinite;
+    font-style:italic;
+  }
+  @keyframes textShimmer { 0%,100%{background-position:0% 50%;} 50%{background-position:100% 50%;} }
+
+  .gate-sub {
+    font-family:'Inter',sans-serif; font-weight:300; font-size:15px;
+    color:var(--text-sec); line-height:1.8; max-width:480px;
+    margin:0 auto 36px;
+  }
+
+  .gate-orb {
+    width:64px; height:64px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #f4e060, #f4a749 40%, #f62bd1 80%);
+    margin:0 auto 24px;
+    box-shadow:0 0 30px rgba(246,43,209,0.5), 0 0 60px rgba(244,167,73,0.3);
+    animation:orbPulse 3s ease-in-out infinite;
+  }
+  @keyframes orbPulse {
+    0%,100% { box-shadow:0 0 30px rgba(246,43,209,0.5),0 0 60px rgba(244,167,73,0.3); transform:scale(1); }
+    50% { box-shadow:0 0 50px rgba(246,43,209,0.7),0 0 90px rgba(244,167,73,0.45); transform:scale(1.06); }
+  }
+
+  .btn-gate {
+    display:inline-block; width:100%; max-width:420px;
+    padding:20px 32px;
+    background:var(--gradient);
+    color:#fff; font-family:'Inter',sans-serif; font-weight:600;
+    font-size:13px; letter-spacing:0.18em; text-transform:uppercase;
+    text-align:center; text-decoration:none; border-radius:30px;
+    border:none; cursor:pointer;
+    box-shadow:0 8px 28px rgba(246,43,209,0.35), 0 0 0 0 rgba(246,43,209,0.4);
+    animation:btnPulse 3s ease-in-out infinite;
+    transition:transform 0.2s, opacity 0.2s;
+  }
+  .btn-gate:hover { transform:translateY(-2px); opacity:0.9; }
+  @keyframes btnPulse {
+    0%,100% { box-shadow:0 8px 28px rgba(246,43,209,0.35),0 0 0 0 rgba(246,43,209,0.3); }
+    50% { box-shadow:0 12px 40px rgba(246,43,209,0.5),0 0 0 10px rgba(246,43,209,0); }
+  }
+
   @keyframes fadeUp { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
 
   .copyright { text-align:center; padding:32px 24px; font-family:'Inter',sans-serif; font-weight:300; font-size:11px; letter-spacing:0.08em; color:rgba(248,245,255,0.25); border-top:1px solid var(--border); }
@@ -335,6 +441,7 @@
     .somatic-block { padding:28px 20px 24px; }
     .reflection-card { padding:22px 18px; }
     .callout { padding:22px 20px; }
+    .gate-inner { padding:40px 24px 36px; }
   }
 </style>
 </head>
@@ -462,10 +569,25 @@
       <p class="save-description">Your responses are not saved automatically. Use the Copy My Responses button above to copy them, then paste into your notes app on your phone or computer.</p>
     </div>
 
-    <!-- FOOTER STACK -->
-    <div class="footer-stack">
-      <a href="https://ceydaseren.github.io/tjstep10/" class="btn-next-step">Move to Stabilization Phase →</a>
-      <a href="https://www.skool.com/timeline-jumpers-9976/classroom" target="_blank" class="btn-skool">Take Me Back to Skool</a>
+    <!-- STABILIZATION GATE -->
+    <div class="activation-gate">
+      <div class="gate-bg"></div>
+      <div class="gate-border-top"></div>
+      <div class="gate-sparkles">
+        <span class="gate-spark" style="top:12%;left:8%;color:#1cd6e7;--sd:5s;--del:0s;">✦</span>
+        <span class="gate-spark" style="top:18%;right:10%;color:#f62bd1;--sd:7s;--del:1s;">★</span>
+        <span class="gate-spark" style="top:60%;left:5%;color:#f4a749;--sd:6s;--del:2s;">✧</span>
+        <span class="gate-spark" style="top:70%;right:7%;color:#8051c8;--sd:8s;--del:0.5s;">✦</span>
+        <span class="gate-spark" style="bottom:15%;left:15%;color:#1cd6e7;--sd:5.5s;--del:3s;">✧</span>
+        <span class="gate-spark" style="bottom:20%;right:14%;color:#f62bd1;--sd:6.5s;--del:1.5s;">★</span>
+      </div>
+      <div class="gate-inner">
+        <div class="gate-eyebrow">✦ Activation Phase Complete ✦</div>
+        <div class="gate-orb"></div>
+        <h2 class="gate-headline">It's Time to Stabilize<br>Your Timeline Jump</h2>
+        <p class="gate-sub">You've now activated your new reality with your Divine Team and Source. Now it's time to stabilize your jump until it snaps into place.</p>
+        <a href="https://www.skool.com/timeline-jumpers-9976/classroom/c6208d08?md=868ffc489af34de2863755d15e839211" target="_blank" class="btn-gate">Move to Stabilization Phase →</a>
+      </div>
     </div>
 
   </div><!-- /main-content -->
